@@ -1,82 +1,97 @@
-# Multi camera control system
-This project implements a real-time data processing pipeline using Apache Kafka, Elasticsearch, and Python. The system consists of producers that sends data to Kafka and a consumer that processes the data and stores it in Elasticsearch.
-# Prerequisites
+# ETRISUB Project for Human and Vehicle Attributes Recognition, Re-ID
 
-Python 3.10 with pip
-Apache Kafka
-Elasticsearch
+## Introduction
 
+The ETRISUB project is a multi-camera control system designed for real-time human and vehicle attribute recognition and re-identification (Re-ID). Cameras capture images and metadata which are sent through
+an Apache Kafka pipeline. A **producer** component ingests camera data and publishes messages to Kafka topics. A **consumer** component subscribes to those topics,
+processes the incoming data (e.g. human and vehicle attributes extraction, Re-ID), and indexes the results into Elasticsearch for search and analytics.
 
-# Installation
+This architecture enables scalable, distributed processing of surveillance data, with Kafka providing durable messaging and Elasticsearch offering powerful
+search capabilities.
 
-Install Python dependencies
-bashCopypip install -r requirements.txt
+## Prerequisites
 
-Install Apache Kafka
+- Python 3.10 with pip
+- Apache Kafka
+- Elasticsearch
 
-Download Apache Kafka from the official website
-Extract it to the kafka directory in your project
-Ensure the Kafka scripts have execute permissions:
-bashCopychmod +x kafka/bin/*
+## Installation
 
+1. **Python dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
+2. **Apache Kafka**
+   - Download from the official website.
+   - Extract to the `kafka` directory in your project.
+   - Ensure Kafka scripts are executable:
+     ```bash
+     chmod +x kafka/bin/*
+     ```
 
-Install Elasticsearch
+3. **Elasticsearch**
+   - Download from the official website.
+   - Extract to the `elasticsearch` directory in your project.
+   - Ensure the Elasticsearch binary is executable:
+     ```bash
+     chmod +x elasticsearch/bin/elasticsearch
+     ```
 
-Download Elasticsearch from the official website
-Extract it to the elasticsearch directory in your project
-Ensure the Elasticsearch binary has execute permissions:
-bashCopychmod +x elasticsearch/bin/elasticsearch
+## Configuration
 
+### Kafka Configuration
 
+- Configuration files are located in `kafka/config/`.
+- Default settings work for basic setup.
+- Modify `server.properties` and `zookeeper.properties` if needed.
 
+### Elasticsearch Configuration
 
-# Configuration
+- Configuration files are located in `elasticsearch/config/`.
+- Default settings should be sufficient.
 
-Kafka Configuration
+## Usage
 
-Configuration files are located in kafka/config/
-Default configurations should work for basic setup
-Modify server.properties and zookeeper.properties if needed
+### Starting all services
 
-
-Elasticsearch Configuration
-
-Configuration files are located in elasticsearch/config/
-Default configurations should work for basic setup
-
-
-
-# Usage
-
-Start all services
-bashCopychmod +x start_services.sh
+```bash
+chmod +x start_services.sh
 ./start_services.sh
+```
+
 This script will:
 
-Start Zookeeper
-Start Kafka Server
-Start Elasticsearch
-Start the Python Producer
-Start the Python Consumer
+- Start Zookeeper
+- Start Kafka Server
+- Start Elasticsearch
+- Start the Python Producer
+- Start the Python Consumer
 
+### Manual startup
 
-Manual startup (if needed)
-You can also start each service manually in separate terminals:
-## Terminal 1 - Start Zookeeper
-cd kafka
-bin/zookeeper-server-start.sh config/zookeeper.properties
+Open separate terminals for each service:
 
-## Terminal 2 - Start Kafka
-cd kafka
-bin/kafka-server-start.sh config/server.properties
-
-## Terminal 3 - Start Elasticsearch
-cd elasticsearch
-./bin/elasticsearch
-
-## Terminal 4 - Start Producer
-python producer.py
-
-## Terminal 5 - Start Consumer
-python consumer.py
+1. **Start Zookeeper**
+   ```bash
+   cd kafka
+   bin/zookeeper-server-start.sh config/zookeeper.properties
+   ```
+2. **Start Kafka**
+   ```bash
+   cd kafka
+   bin/kafka-server-start.sh config/server.properties
+   ```
+3. **Start Elasticsearch**
+   ```bash
+   cd elasticsearch
+   ./bin/elasticsearch
+   ```
+4. **Start Producer**
+   ```bash
+   python producer.py
+   ```
+5. **Start Consumer**
+   ```bash
+   python consumer.py
+   ```
