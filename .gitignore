@@ -33,5 +33,5 @@ test_data/
 
 # Ignore config and zipped files
 *.ini
-.zip
-.tgz
+*.zip
+*.tgz

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Multi-Camera Stream{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Multi-Camera Surveillance System</h1>
+</div>
+<a href="/search" class="button">Search Analysis Results</a>
+<div class="camera-container">
+    {% for i in range(num_cameras) %}
+    <div class="camera" onclick="window.location.href='/frames/{{ i }}'">
+        <h2>Camera {{ i + 1 }}</h2>
+        <img src="{{ url_for('video_feed', camera_id=i) }}" alt="Camera {{ i + 1 }} Feed">
+        <div class="camera-overlay">
+            <span class="view-details-btn">View Detailed Analysis</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

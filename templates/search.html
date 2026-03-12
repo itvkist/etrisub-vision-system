@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Search Analysis Results{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="/" class="back-button">← Back to Cameras</a>
+    <h1>Search Analysis Results</h1>
+</div>
+
+<div class="search-container">
+    <div class="search-form">
+        <input type="text" id="searchInput" class="search-input" 
+            placeholder="Search for attributes or descriptions...">
+        <button onclick="performSearch()" class="search-button">Search</button>
+    </div>
+    <div id="searchResults"></div>
+</div>
+
+<style>
+    .loading {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #666;
+    }
+    .error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% endblock %}
