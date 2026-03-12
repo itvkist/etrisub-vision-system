@@ -35,11 +35,11 @@ class ElasticsearchClient:
     def __init__(self):
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         self.es = Elasticsearch(
-        hosts=[{'host': 'localhost', 'port': 9200, 'scheme': 'http'}],
-        # If using self-signed certificates, you might need:
-        verify_certs=False,
-        ssl_show_warn=False
-    )
+            #hosts=["https://localhost:9200"],
+            #basic_auth=['elastic', 'haK9PfmRkM*BRv+K5DX3'],
+            #verify_certs=False
+            hosts=[{'host': 'localhost', 'port': 9200, 'scheme': 'http'}]
+        )
     
     def index_analysis(self, doc):
         return self.es.index(index='surveillance_analysis', body=doc)
@@ -49,7 +49,7 @@ class ElasticsearchClient:
             "query": {
                 "multi_match": {
                     "query": search_term,
-                    "fields": ["filtered_content", "attributes.*"]
+                    "fields": ["filtered_content", "attributes.*.*.keyword"]
                 }
             }
         }
