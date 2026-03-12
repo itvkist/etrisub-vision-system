@@ -34,6 +34,7 @@ body {
 }
 
 .camera { 
+    display: inline-block;
     background-color: #333333;
     border: 2px solid #333;
     border-radius: 10px;
@@ -57,9 +58,8 @@ body {
 }
 
 .camera img {
-    width: 100%;
-    max-width: 480px;
-    height: auto;
+    width: 480px;
+    height: 480px;
     border-radius: 5px;
     border: 1px solid #333;
 }
@@ -73,7 +73,7 @@ body {
     background: rgba(0,0,0,0.5);
     border-radius: 10px;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     opacity: 0;
     transition: opacity 0.3s;
@@ -83,8 +83,17 @@ body {
     opacity: 1;
 }
 
-.view-details-btn {
+.view-details-pedestrians-btn {
     background: #00cc00;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.view-details-vehicles-btn {
+    background: #fc7f0a;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;

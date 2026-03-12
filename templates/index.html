@@ -9,11 +9,12 @@
 <a href="/search" class="button">Search Analysis Results</a>
 <div class="camera-container">
     {% for i in range(num_cameras) %}
-    <div class="camera" onclick="window.location.href='/frames/{{ i }}'">
+    <div class="camera">
         <h2>Camera {{ i + 1 }}</h2>
         <img src="{{ url_for('video_feed', camera_id=i) }}" alt="Camera {{ i + 1 }} Feed">
         <div class="camera-overlay">
-            <span class="view-details-btn">View Detailed Analysis</span>
+            <span class="view-details-pedestrians-btn" onclick="window.location.href='/frames/{{ i }}/humans'">Pedestrians Analysis</span>
+            <span class="view-details-vehicles-btn" onclick="window.location.href='/frames/{{ i }}/vehicles'">Vehicles Analysis</span>
         </div>
     </div>
     {% endfor %}

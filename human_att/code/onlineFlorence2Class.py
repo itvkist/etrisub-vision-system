@@ -1,10 +1,13 @@
 import torch
-from transformers import AutoProcessor, AutoModelForCausalLM
+#from transformers import AutoProcessor, AutoModelForCausalLM
 import cv2
 from PIL import Image
 import os
 from ultralytics import YOLO
-from human_att.code.humanDetectorClass import HumanDetector
+import requests
+import io, base64
+
+ngrok_url = "https://bb67c9762709.ngrok-free.app/generate"
 
 
 def xywh_to_x1y1x2y2(x, y, w, h):
@@ -17,48 +20,60 @@ def xywh_to_x1y1x2y2(x, y, w, h):
     
 class Florence2Model:
     def __init__(self, model_name="microsoft/Florence-2-base"):
-        #self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
-        print(f"Using device for Florence2: {self.device}")
-        #self.detection_model = model = YOLO("pretrained/yolov8n.pt")
-        #self.detection_model.to(self.device)
-        self.detection_model = HumanDetector()
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"Using device: {self.device}")
+        self.detection_model = model = YOLO("pretrained/yolov8n.pt")
         self.torch_dtype = torch.float32
         self.conf_threshold = 0.4
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            torch_dtype=self.torch_dtype,
-            trust_remote_code=True
-        ).to("cuda:0")
+        #self.model = AutoModelForCausalLM.from_pretrained(
+        #    model_name,
+        #    torch_dtype=self.torch_dtype,
+        #    trust_remote_code=True
+        #).to(self.device)
         
-        self.processor = AutoProcessor.from_pretrained(
-            model_name,
-            trust_remote_code=True
-        )
+        #self.processor = AutoProcessor.from_pretrained(
+        #    model_name,
+        #    trust_remote_code=True
+        #)
 
     def generate(self, task_prompt, image, text_input=None):
-        prompt = task_prompt if text_input is None else task_prompt + text_input
+
+        buf = io.BytesIO()
+        image.save(buf, format="JPEG")
+        img_64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+
+        payload = {
+            "task_prompt": task_prompt,
+            "image_b64": img_64,
+            "text_input": text_input
+        }
+
+        res = requests.post(url=ngrok_url, json=payload)
+        # still synchronous call
+        return res.json()
+
+        #prompt = task_prompt if text_input is None else task_prompt + text_input
         
-        inputs = self.processor(text=prompt, images=image, return_tensors="pt")
+        #inputs = self.processor(text=prompt, images=image, return_tensors="pt")
 
-        generated_ids = self.model.generate(
-            input_ids=inputs["input_ids"].to(self.device),
-            pixel_values=inputs["pixel_values"].to(self.device),
-            max_new_tokens=1024,
-            early_stopping=False,
-            do_sample=False,
-            num_beams=3,
-        )
+        #generated_ids = self.model.generate(
+        #    input_ids=inputs["input_ids"].to(self.device),
+        #    pixel_values=inputs["pixel_values"].to(self.device),
+        #    max_new_tokens=1024,
+        #    early_stopping=False,
+        #    do_sample=False,
+        #    num_beams=3,
+        #)
 
-        generated_text = self.processor.batch_decode(generated_ids, skip_special_tokens=False)[0]
+        #generated_text = self.processor.batch_decode(generated_ids, skip_special_tokens=False)[0]
 
-        parsed_answer = self.processor.post_process_generation(
-            generated_text,
-            task=task_prompt,
-            image_size=(image.width, image.height)
-        )
+        #parsed_answer = self.processor.post_process_generation(
+        #    generated_text,
+        #    task=task_prompt,
+        #    image_size=(image.width, image.height)
+        #)
 
-        return parsed_answer
+        #return parsed_answer
 
     def get_boxes_by_label(self, data, label):
         boxs = []
@@ -76,7 +91,7 @@ class Florence2Model:
         return image
 
     def process_frame_tasks(self, frame_rgb, path_img_out="output_directory/"):
-        detection_results = self.detection_model.model(frame_rgb,verbose = False)[0]
+        detection_results = self.detection_model(frame_rgb,verbose = False)[0]
         annotated_frame = frame_rgb.copy()
         # Generate caption
         pil_image = Image.fromarray(frame_rgb)
@@ -113,7 +128,7 @@ class Florence2Model:
         return annotated_frame,results, caption_results, image_results
 
     def process_detect(self, frame_rgb, path_img_out="output_directory/"):
-        detection_results = self.detection_model.model(frame_rgb,verbose = False)[0]
+        detection_results = self.detection_model(frame_rgb,verbose = False)[0]
         annotated_frame = frame_rgb.copy()
         # Generate caption
         # pil_image = Image.fromarray(frame_rgb)
@@ -156,7 +171,7 @@ class Florence2Model:
         for crop_area in crop_area_list:
             crop_img = pil_image.crop(crop_area)
             task_prompt1 = '<DETAILED_CAPTION>'
-            result1 = self.generate(task_prompt1, crop)
+            result1 = self.generate(task_prompt1, crop_area)
             caption_results.append(result1)
         print(f"caption_results: {caption_results}")
         return caption_results

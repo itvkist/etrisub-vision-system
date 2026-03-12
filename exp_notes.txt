@@ -1,0 +1,16 @@
+1 () - Raw running without any AI model: no duplication, no crash video, no signal loss, just latency or jitter? -> Not the img render by flask server.
+2 - Running with only YOLO pedestrians detection: (T4): no duplication, no crash, cam1 signal loss, latency+jitter, something happend with FPS?
+                                                  (A10): still got cam1 signal loss, video crash on cam1 but cam2 is better (no blur, compare to A10)
+                                                  => focus on the duplication problem first!
+3 - Running with only YOLO vehicle detection: (T4): latency+jitter, no duplication
+4 - Running with YOLO pedestrians + YOLO vehicle detection only (multithread): got duplication, latency, crash
+5 - Running with YOLO pedestrians + YOLO vehicle detection only by sequencely (florence2 on A10 only): No duplication, latency, crash
+6 - Running with YOLO pedestrians + YOLO vehicle detection + MMT by sequencely (florence2 on A10 only): No duplication, latency, crash, lagg when stop moving
+
+7.1 - Running on outdoor camera: 1 stream: no crash, no duplication for human. crash, blur? when human + motorbike. 2 stream: both crash + duplication
+
+8 - No AI model (raw stream) on outdoor cameras: still crash image, slightly duplication, jitter.
+9 - Try the path stream0 instead of media/video1 for the inhouse camera: still no duplication (no changes).
+     Then try the media/video1 for the outdoor camera.
+10 - Batch inference florence2 on A10
+11 - System with deepstream from Phenikka team showed very good demo. (no jitter, no lattency?, no lag, no duplication) -> Not the camera data transfer problem.

@@ -1,0 +1,25 @@
+<!-- templates/frames.html -->
+{% extends "base.html" %}
+
+{% block title %}Camera {{ camera_id }} Analysis{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="/" class="back-button">← Back to Cameras</a>
+    <h1>Camera {{ camera_id }} Detailed Vehicles Analysis</h1>
+    <button onclick="refreshVehicleAnalysis()" class="refresh-button">Refresh Analysis</button>
+</div>
+
+<div class="analysis-container">
+    <div id="analysis-vehicle-content" class="loading">
+        Loading analysis...
+    </div>
+</div>
+
+<!-- Pass camera_id as a data attribute -->
+<div id="camera-data" data-camera-id="{{ camera_id }}"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/vehicle_frames.js') }}"></script>
+{% endblock %}
