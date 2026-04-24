@@ -77,5 +77,5 @@ function refreshHumanAnalysis() {
 
 document.addEventListener('DOMContentLoaded', function() {
     refreshHumanAnalysis();
-    setInterval(refreshHumanAnalysis, 50000);
+    setInterval(refreshHumanAnalysis, 5000);
 });

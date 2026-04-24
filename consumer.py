@@ -167,10 +167,9 @@ class FrameProcessor:
         # 2 YOLO models on a same GPU -> GPU context switching. OOM!
         # Another way: 2 YOLO on 2 GPU, no CUDA context switching!
         # Also considering batch processing, examples from batchFlorence2.py
-        #rocessed_human_frame, _ = self.humanModel.process_detect(frame_rgb)
-        #listBox_vehicle = self.carModel.process_detect(frame_rgb)
+        # processed_human_frame, _ = self.humanModel.process_detect(frame_rgb)
+        # listBox_vehicle = self.carModel.process_detect(frame_rgb)
         if len(listBox_vehicle) > 0:
-            #processed_frame = self.carModel.draw_box_with_att(processed_frame, listBox_vehicle)
             processed_frame = self.carModel.draw_box_with_att(processed_frame, listBox_vehicle)
         
         cv2.putText(processed_frame, f"FPS: {fps:.2f}", (10, 30), 
@@ -355,7 +354,7 @@ class SurveillanceSystem:
                             'attributes': attributes,
                             'camera_id': camera_id
                         }
-                        #elf.es_client.index_analysis(doc)
+                        self.es_client.index_analysis(doc)
 
                     return jsonify({
                         'timestamp': frame_info['timestamp'],
@@ -409,7 +408,7 @@ class SurveillanceSystem:
                             'camera_id': camera_id
                             }
                         
-                        #self.es_client.index_analysis(doc)
+                        self.es_client.index_analysis(doc)
 
                     return jsonify({
                         'timestamp': frame_info['timestamp'],
