@@ -11,32 +11,63 @@ search capabilities.
 
 ## Prerequisites
 
-- Python 3.10 with pip
+- Python 3.10 with Conda
 - Apache Kafka
 - Elasticsearch
+- GStreamer (for RTSP camera ingestion)
 
 ## Installation
 
-1. **Python dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 1. Clone the repository
 
-2. **Apache Kafka**
-   - Download from the official website.
-   - Extract to the `kafka` directory in your project.
-   - Ensure Kafka scripts are executable:
-     ```bash
-     chmod +x kafka/bin/*
-     ```
+Download the source code from GitHub and switch to the `vehicle-api-integrated` branch, which includes vehicle counting integration (the `main` branch contains human analysis only):
 
-3. **Elasticsearch**
-   - Download from the official website.
-   - Extract to the `elasticsearch` directory in your project.
-   - Ensure the Elasticsearch binary is executable:
-     ```bash
-     chmod +x elasticsearch/bin/elasticsearch
-     ```
+```bash
+git clone https://github.com/itvkist/etrisub-vision-system.git
+cd etrisub-vision-system
+git checkout vehicle-api-integrated
+```
+
+### 2.1. Install Apache Kafka
+
+Download Kafka from the official website: https://kafka.apache.org/downloads
+
+Extract to the `kafka/` directory in the project:
+```bash
+tar -xzf kafka_2.13-3.x.x.tgz
+mv kafka_2.13-3.x.x kafka
+```
+
+Grant execute permissions to Kafka scripts:
+```bash
+chmod +x kafka/bin/*
+```
+
+### 2.2. Install Elasticsearch
+
+Download Elasticsearch from the official website: https://www.elastic.co/downloads/elasticsearch
+
+Extract to the `elasticsearch/` directory in the project:
+```bash
+tar -xzf elasticsearch-8.x.x-linux-x86_64.tar.gz
+mv elasticsearch-8.x.x elasticsearch
+```
+
+Grant execute permissions:
+```bash
+chmod +x elasticsearch/bin/elasticsearch
+```
+
+### 2.3. Install the Python environment (etri_gst)
+
+The main Python environment is used for the Consumer (AI processing) and all system services:
+
+```bash
+conda create --name etri_gst python=3.10
+conda activate etri_gst
+conda install -c conda-forge gstreamer pygobject gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
+pip install -r requirements.txt
+```
 
 ## Configuration
 
@@ -89,9 +120,11 @@ Open separate terminals for each service:
    ```
 4. **Start Producer**
    ```bash
-   python producer.py
+   conda activate etri_gst
+   python producer_gst.py
    ```
 5. **Start Consumer**
    ```bash
+   conda activate etri_gst
    python consumer.py
    ```
